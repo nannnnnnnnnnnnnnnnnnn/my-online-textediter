@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Verilog Web Editor</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #1e1e1e;
+    }
+    #container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <!-- Monaco Editor -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.43.0/min/vs/loader.min.js"></script>
+</head>
+<body>
+  <div id="container"></div>
+
+  <script>
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.43.0/min/vs' }});
+    require(['vs/editor/editor.main'], function() {
+      const editor = monaco.editor.create(document.getElementById('container'), {
+        value: localStorage.getItem("verilogCode") || `module hello;
+  initial begin
+    $display("Hello, Verilog!");
+  end
+endmodule`,
+        language: 'verilog',
+        theme: 'vs-dark',
+        fontSize: 14,
+        minimap: { enabled: false }
+      });
+
+      // 保存（入力のたびにlocalStorageへ）
+      editor.onDidChangeModelContent(() => {
+        localStorage.setItem("verilogCode", editor.getValue());
+      });
+    });
+  </script>
+</body>
+</html>
